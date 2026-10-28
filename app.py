@@ -91,7 +91,7 @@ if 'current_view' not in st.session_state:
 if 'selected_text_id' not in st.session_state:
     st.session_state.selected_text_id = 1
 
-# --- 6 НЕДІЗГІ МӘТІН ЖӘНЕ ТАПСЫРМАЛАР БАЗАСЫ ---
+# --- 6 НЕГІЗГІ МӘТІН ЖӘНЕ ТАПСЫРМАЛАР БАЗАСЫ ---
 TEXTS_DATABASE = {
     1: {
         "title": "Adeliya’s Daily Routine",
@@ -565,7 +565,6 @@ TEXTS_DATABASE = {
 with st.sidebar:
     st.markdown("## 🛡️ **ОҚУШЫ ПРОФИЛІ**")
     
-    # Деңгей мен XP есептеу
     current_level = (st.session_state.xp // 100) + 1
     st.session_state.level = current_level
     
@@ -603,4 +602,116 @@ if st.session_state.current_view == "bookcase":
 
     cols = st.columns(3)
     for idx, (t_id, data) in enumerate(TEXTS_DATABASE.items()):
-        with cols
+        with cols[idx % 3]:
+            st.markdown(f"""
+            <div class="book-shelf-card">
+                <h2>{data['icon']} {data['title']}</h2>
+                <p><b>Жанры:</b> {data['genre']}</p>
+                <p><i>5 Сұрақ + Сәйкестендіру</i></p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            is_done = t_id in st.session_state.completed_texts
+            btn_label = "✅ Тапсырылды (Қайталау)" if is_done else "🚀 Мәтінді оқу және тапсырмалар"
+            
+            if st.button(btn_label, key=f"select_{t_id}", use_container_width=True):
+                st.session_state.selected_text_id = t_id
+                st.session_state.current_view = "workspace"
+                st.rerun()
+
+# =====================================================================
+# VIEW 2: WORKSPACE (МӘТІН, ТЕСТ ЖӘНЕ СӘЙКЕС ТАПСЫРМА)
+# =====================================================================
+elif st.session_state.current_view == "workspace":
+    current_data = TEXTS_DATABASE[st.session_state.selected_text_id]
+    
+    st.markdown(f"### {current_data['icon']} {current_data['title']}")
+    
+    tab1, tab2, tab3 = st.tabs(["📖 1. Мәтінді Оқу", "📝 2. Тест Тапсырмалары (5 Сұрақ)", "🔗 3. Сәйкестендіру"])
+
+    # ------------------ TAB 1: МӘТІН ------------------
+    with tab1:
+        st.markdown('<div class="text-card">', unsafe_allow_html=True)
+        st.markdown(current_data['text'])
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.success("👉 Мәтінді оқып болсаңыз, жоғарыдағы **«2. Тест Тапсырмалары»** немесе **«3. Сәйкестендіру»** табына өтіңіз!")
+
+    # ------------------ TAB 2: ТЕСТ ------------------
+    with tab2:
+        st.subheader("📝 NIS Форматындағы Тест Сұрақтары")
+        st.caption("Әрбір дұрыс жауап үшін +20 XP беріледі!")
+        
+        user_answers = {}
+        with st.form(key=f"quiz_form_{st.session_state.selected_text_id}"):
+            for q_idx, q in enumerate(current_data['quiz']):
+                st.markdown(f"**{q['question']}**")
+                user_answers[q_idx] = st.radio(
+                    "Жауапты таңдаңыз:",
+                    q['options'],
+                    key=f"q_{st.session_state.selected_text_id}_{q_idx}",
+                    index=None
+                )
+                st.markdown("---")
+            
+            submit_quiz = st.form_submit_button("🎯 Жауаптарды Тексеру")
+
+        if submit_quiz:
+            score = 0
+            total = len(current_data['quiz'])
+            
+            for q_idx, q in enumerate(current_data['quiz']):
+                if user_answers[q_idx] == q['answer']:
+                    score += 1
+
+            gained_xp = score * 20
+            st.session_state.xp += gained_xp
+            
+            st.balloons()
+            st.markdown(f"### 📊 Сіздің нәтижеңіз: **{score} / {total}** ({int(score/total*100)}%)")
+            st.info(f"⚡ Тамаша! Сіз **+{gained_xp} XP** ұпай жинадыңыз!")
+            
+            st.markdown("### 🔍 Түсіндірмелер мен Тексеру:")
+            for q_idx, q in enumerate(current_data['quiz']):
+                u_ans = user_answers[q_idx]
+                is_correct = (u_ans == q['answer'])
+                if is_correct:
+                    st.success(f"**{q['question']}**\n\n✅ Сіздің жауабыңыз дұрыс: {q['answer']}\n\n💡 *Түсіндірме:* {q['explanation']}")
+                else:
+                    st.error(f"**{q['question']}**\n\n❌ Сіздің жауабыңыз: {u_ans if u_ans else 'Таңдалмады'}\n\n✔ **Дұрыс жауап:** {q['answer']}\n\n💡 *Түсіндірме:* {q['explanation']}")
+
+    # ------------------ TAB 3: СӘЙКЕС ТАПСЫРМА ------------------
+    with tab3:
+        st.subheader("🔗 Ұғымдар мен Анықтамаларды Сәйкестендіру")
+        st.caption("Сол жақтағы ұғымға оң жақтағы дұрыс анықтамасын таңдаңыз:")
+        
+        matching_data = current_data['matching']
+        left_items = list(matching_data.keys())
+        right_options = list(matching_data.values())
+        
+        user_matching = {}
+        with st.form(key=f"matching_form_{st.session_state.selected_text_id}"):
+            for item in left_items:
+                st.markdown(f"📌 **{item}**")
+                user_matching[item] = st.selectbox(
+                    "Сәйкес анықтамасын таңдаңыз:",
+                    ["-- Таңдаңыз --"] + right_options,
+                    key=f"match_{st.session_state.selected_text_id}_{item}"
+                )
+                st.write("")
+
+            submit_match = st.form_submit_button("✅ Сәйкестікті Тексеру")
+
+        if submit_match:
+            correct_count = 0
+            for item, correct_val in matching_data.items():
+                if user_matching[item] == correct_val:
+                    correct_count += 1
+            
+            total_match = len(matching_data)
+            if correct_count == total_match:
+                st.balloons()
+                st.success(f"🎉 **Тамаша!** Барлық {total_match} сәйкестік дұрыс табылды! (+50 XP)")
+                st.session_state.xp += 50
+                st.session_state.completed_texts.add(st.session_state.selected_text_id)
+            else:
+                st.warning(f"🎯 Сіз **{correct_count} / {total_match}** сәйкестікті таптыңыз. Қайта байқап көріңіз!")
