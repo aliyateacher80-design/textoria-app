@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS СТИЛЬДЕРІ ---
+# --- CSS СТИЛЬДЕРІ (Сұрақтар мен мәтіндерді ақ түске бояу) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@400;600;800&display=swap');
@@ -33,6 +33,12 @@ st.markdown("""
         backdrop-filter: blur(10px);
         font-size: 1.1rem;
         line-height: 1.7;
+        color: #ffffff !important;
+    }
+
+    /* Тест және сәйкестендіру сұрақтарын ақ түске өзгерту */
+    .stMarkdown, p, span, label, div[data-baseweb="radio"] div, div[data-baseweb="select"] div {
+        color: #ffffff !important;
     }
 
     .stButton > button {
@@ -59,17 +65,7 @@ st.markdown("""
         padding: 20px;
         text-align: center;
         margin-bottom: 15px;
-    }
-
-    .badge-box {
-        display: inline-block;
-        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-        color: #78350f;
-        padding: 8px 16px;
-        border-radius: 50px;
-        font-weight: 800;
-        font-size: 0.9rem;
-        margin: 5px;
+        color: #ffffff;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -90,7 +86,7 @@ if 'student_name' not in st.session_state:
 if 'student_class' not in st.session_state:
     st.session_state.student_class = "6 «Ә»"
 
-# --- 6 МӘТІН ЖӘНЕ ТОЛЫҚ ТАПСЫРМАЛАР БАЗАСЫ ---
+# --- 9 МӘТІН ЖӘНЕ ТОЛЫҚ ТАПСЫРМАЛАР БАЗАСЫ ---
 TEXTS_DATABASE = {
     1: {
         "title": "Adeliya’s Daily Routine",
@@ -216,6 +212,69 @@ TEXTS_DATABASE = {
             {"question": "5. What causes the singing sand dunes to make a sound?", "options": ["A) Birds sing above the dunes.", "B) Water flows under the sand.", "C) The wind moves the sand.", "D) People walk across the dunes."], "answer": "C) The wind moves the sand.", "explanation": "Жел құмды қозғағанда, орган аспабына ұқсас дыбыс шығады."}
         ],
         "matching": {"4,600 km2": "Total area of Altyn-Emel National Park", "1,800 species": "Plant species found in the park", "Four types of eagle": "Imperial, golden eagles and other rare birds", "Singing dunes": "3 km long, 500 m high sand dunes", "Wind moving sand": "Makes a sound like an organ"}
+    },
+    7: {
+        "title": "Asanaly Ashimov",
+        "genre": "Biography & Culture",
+        "icon": "🎭",
+        "text": """
+        Asanaly Ashimov is one of the best-known names in theatre and cinema in Kazakhstan, and he has received many awards for his work.
+        He grew up in a village, but he loved to act and wanted to study drama, so he enrolled at the Kazakh State Conservatory in Almaty.
+        He showed talent as a student and appeared in his first film in 1958, while he was still a student.
+        After he graduated, he joined the M. Auezov theatre troupe in Almaty and started acting on stage. Some of the Kazakh roles he is famous for are Kodar in Kozy Korpesh, Kebek in Yenlik Kebek and Yelamen in Blood and Sweat.
+        He has also played some famous roles in international plays. For example, he played Julius Caesar in Shakespeare’s play, the lead part in Don Juan, and Dr Clausen in Before Sunset by G. Hauptmann – a role he performed over 100 times.
+        Some actors only work in one medium (cinema or theatre), but Ashimov worked in both. The early films that made him famous are Kyz-Zhibek, in 1970, and The End of Ataman, in 1972. This is a historic thriller and an extremely successful Kazakh film. The director was Ashimov’s father-in-law, but unfortunately he died soon after making it.
+        Like many successful actors, Ashimov decided to try directing. His first film was The Year of the Dragon in 1984 and after that he spent more time directing films than appearing in them – but he also found time to work in the theatre.
+        """,
+        "quiz": [
+            {"question": "1. When did Ashimov first appear in a film?", "options": ["A) After becoming a director", "B) After graduating from university", "C) While he was still a student", "D) After joining the theatre troupe"], "answer": "C) While he was still a student", "explanation": "Әшімов 1958 жылы студент кезінде алғашқы фильміне түскен."},
+            {"question": "2. What does the word “troupe” mean in the fourth paragraph?", "options": ["A) A group of actors who perform together", "B) A school for young musicians", "C) A company that produces books", "D) A building where films are shown"], "answer": "A) A group of actors who perform together", "explanation": "Troupe — бірге өнер көрсететін актерлер тобы, яғни театр труппасы."},
+            {"question": "3. What does the word “This” refer to in the sentence “This is a historic thriller and an extremely successful Kazakh film”?", "options": ["A) Kyz-Zhibek", "B) The End of Ataman", "C) The Year of the Dragon", "D) Kozy Korpesh"], "answer": "B) The End of Ataman", "explanation": "This сөзі 1972 жылы шыққан The End of Ataman фильміне қатысты."},
+            {"question": "4. Which statement about Ashimov is correct according to the text?", "options": ["A) He worked only in cinema.", "B) He became a director before becoming an actor.", "C) He performed the role of Dr Clausen over 100 times.", "D) He studied drama in a village."], "answer": "C) He performed the role of Dr Clausen over 100 times.", "explanation": "Ол Before Sunset қойылымындағы доктор Клаузен рөлін 100-ден астам рет орындаған."},
+            {"question": "5. Which of the following films was directed by Ashimov?", "options": ["A) Kyz-Zhibek", "B) The End of Ataman", "C) The Year of the Dragon", "D) Blood and Sweat"], "answer": "C) The Year of the Dragon", "explanation": "The Year of the Dragon — Әшімовтің 1984 жылы түсірген алғашқы режиссерлік фильмі."}
+        ],
+        "matching": {"1958": "First film appearance while a student", "M. Auezov troupe": "Joined after graduation to act on stage", "Dr Clausen": "Role in Before Sunset performed over 100 times", "The End of Ataman": "1972 historic thriller film", "The Year of the Dragon": "His first directed film in 1984"}
+    },
+    8: {
+        "title": "The Internet",
+        "genre": "Technology & History",
+        "icon": "🌐",
+        "text": """
+        Where do you look for information, play games, watch videos, download e-books and buy music? What do you use to write emails or chat to friends on websites like Facebook or MySpace? More than 1.5 billion people do these things on the internet every day. Today, the internet is all over the world, but fifty years ago it did not exist.
+        The internet started in 1969 in the USA. It was called ARPANET at first, but its name soon changed to ‘the internet’. Universities used it to communicate ideas and information. In those days, computers were enormous machines and not many people used them.
+        This began to change in 1971 when Ray Tomlinson, an American engineer, sent the first email message. He chose the symbol @ on his keyboard to identify his email address.
+        The internet didn’t become really popular until Tim Berners-Lee, an English scientist, invented the World Wide Web in 1989.
+        His invention was very important because it became possible to do a lot more things on the internet like listening to music and watching videos. He created the first website and named it info.cern.ch. He used the symbol ‘ch’ for Switzerland because he worked in Geneva.
+        After that, people created millions of websites on every topic. At first, it wasn’t easy to find information, so in the early 1990s many universities developed search engines. Lycos was one of the first of these and later, Yahoo! and Google became very popular.
+        Today you don’t need a big computer to go on the internet. You can use a smartphone or a laptop with a Wi-Fi connection. Internet technology is changing all the time and it is changing our lives.
+        """,
+        "quiz": [
+            {"question": "1. What is the main idea of the text?", "options": ["A) The history and development of the internet", "B) The invention of smartphones", "C) The life of famous scientists", "D) The history of computer games"], "answer": "A) The history and development of the internet", "explanation": "Мәтінде интернеттің пайда болуы, тарихы және уақыт өте дамуы туралы баяндалады."},
+            {"question": "2. What was the internet originally used for?", "options": ["A) Watching videos and playing games", "B) Buying music and downloading books", "C) Sharing ideas and information between universities", "D) Sending messages on social media"], "answer": "C) Sharing ideas and information between universities", "explanation": "Алғашында интернетті университеттер идеялар мен ақпарат алмасу үшін пайдаланған."},
+            {"question": "3. Which event happened first?", "options": ["A) Tim Berners-Lee invented the World Wide Web.", "B) Ray Tomlinson sent the first email.", "C) Google became popular.", "D) ARPANET started in the USA."], "answer": "D) ARPANET started in the USA.", "explanation": "ARPANET 1969 жылы пайда болған. Бұл қалған оқиғалардан бұрын болған."},
+            {"question": "4. What does the word “enormous” mean in the second paragraph?", "options": ["A) Very expensive", "B) Very large", "C) Very modern", "D) Very fast"], "answer": "B) Very large", "explanation": "Enormous сөзі «өте үлкен» деген мағынаны білдіреді."},
+            {"question": "5. What does the word “these” refer to in the sentence “Lycos was one of the first of these”?", "options": ["A) Universities", "B) Websites", "C) Search engines", "D) Computers"], "answer": "C) Search engines", "explanation": "These сөзі search engines (іздеу жүйелері) деген сөз тіркесіне қатысты."}
+        ],
+        "matching": {"1969": "ARPANET started in the USA", "Ray Tomlinson": "Sent the first email in 1971 using @", "Tim Berners-Lee": "Invented the World Wide Web in 1989", "info.cern.ch": "First website created in Switzerland", "Lycos": "One of the early search engines"}
+    },
+    9: {
+        "title": "Almaty Marathon",
+        "genre": "Sport & Community",
+        "icon": "🏃‍♂️",
+        "text": """
+        Every April, the city of Almaty holds a marathon. It started as a small event in 2012, with around 2,500 runners, but in 2015 the number increased to 19,000. People come from many countries to take part. There are runners from Russia, Kyrgyzstan, the UK, the USA, Italy, Spain, Denmark and Norway, but most people come from Almaty and other parts of Kazakhstan.
+        The organizers started the marathon to promote healthier lifestyles. Everyone knows exercise is good for you, but sometimes it is difficult to find the time to do sport. But people like challenges, and a marathon gives them something to aim for. It’s impossible to do nothing all year then run 42 km. You have to train and increase the distance you run over a number of months. Apart from the marathon, there are other shorter events in the year to keep people interested in running.
+        Anyone living in Almaty can enter the marathon, so families and friends can enter together and this helps people feel part of the city. The event also raises money for disabled children to do sport and gives them a better life.
+        Over 20,000 people enter and watch the marathon, so the organizers need lots of volunteers to give each runner food and drink and show them where to go. Anyone can volunteer; you don’t need to be from Almaty or good at running to do this, but you do need a lot of energy, and it is better to do something for your community than not do anything.
+        """,
+        "quiz": [
+            {"question": "1. Why is it important to train for several months before a marathon?", "options": ["A) Because runners need to increase their running distance gradually", "B) Because all runners must become professional athletes", "C) Because the marathon takes several months to finish", "D) Because runners must travel to other countries"], "answer": "A) Because runners need to increase their running distance gradually", "explanation": "Марафонға дайындалу үшін бірнеше ай бойы жаттығып, жүгіретін қашықтықты біртіндеп арттыру қажет."},
+            {"question": "2. Which statement is correct according to the text?", "options": ["A) Only professional athletes can enter the marathon.", "B) All volunteers must be good at running.", "C) The marathon raises money to help disabled children do sport.", "D) Most runners come from the USA and the UK."], "answer": "C) The marathon raises money to help disabled children do sport.", "explanation": "Марафон мүмкіндігі шектеулі балалардың спортпен айналысуына көмектесу үшін қаражат жинайды."},
+            {"question": "3. What can we understand about volunteering at the Almaty Marathon?", "options": ["A) Volunteers must live in Almaty.", "B) Volunteers need to run 42 kilometres.", "C) Volunteering is a way to help the community.", "D) Only people with sports awards can volunteer."], "answer": "C) Volunteering is a way to help the community.", "explanation": "Ерікті болу арқылы адамдар қоғамға пайдалы іс жасайды. Ол үшін кәсіби жүгіруші болу міндетті емес."},
+            {"question": "4. The Almaty Marathon takes place every April.", "options": ["A) True", "B) False", "C) Not given", "D) Cannot say"], "answer": "A) True", "explanation": "Мәтіннің басында Алматы марафоны жыл сайын сәуір айында өтетіні жазылған."},
+            {"question": "5. The marathon organizers arrange shorter running events during the year to keep people interested.", "options": ["A) True", "B) False", "C) Not given", "D) Cannot say"], "answer": "A) True", "explanation": "Ұйымдастырушылар адамдардың жүгіруге қызығушылығын сақтау үшін жыл бойы қысқа қашықтықтағы жарыстар ұйымдастырады."}
+        ],
+        "matching": {"2012": "Almaty Marathon started as a small event", "42 km": "Distance of the main marathon", "Disabled children": "Raise money to help them do sport", "Volunteers": "Give runners food, drink and guidance", "Every April": "When the Almaty Marathon takes place"}
     }
 }
 
@@ -242,7 +301,7 @@ with st.sidebar:
 
 # --- НЕГІЗГІ ХЕДЕР ---
 st.markdown("<h1 style='text-align: center; color: #818cf8; font-family: Comfortaa;'>✨ TEXTORIA ✨</h1>", unsafe_allow_html=True)
-st.markdown("<h4 style='text-align: center; color: #cbd5e1;'>«Ойла. Талда. Жетістікке жет!» — 6-сынып Оқылым Сауаттылығы</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: center; color: #cbd5e1;'>«Ойла. Талда. Жетістікке жет!» — Оқылым Сауаттылығы</h4>", unsafe_allow_html=True)
 st.markdown("---")
 
 # =====================================================================
@@ -264,118 +323,4 @@ if st.session_state.current_view == "bookcase":
             """, unsafe_allow_html=True)
             
             if st.button("🚀 Мәтінді оқу", key=f"select_{t_id}", use_container_width=True):
-                if not st.session_state.student_name.strip():
-                    st.warning("⚠️ Өтінемін, сол жақ панельге аты-жөніңізді жазыңыз!")
-                else:
-                    st.session_state.selected_text_id = t_id
-                    st.session_state.current_view = "workspace"
-                    st.rerun()
-
-# =====================================================================
-# VIEW 2: WORKSPACE (МӘТІН, ТЕСТ ЖӘНЕ СӘЙКЕС ТАПСЫРМА)
-# =====================================================================
-elif st.session_state.current_view == "workspace":
-    current_data = TEXTS_DATABASE[st.session_state.selected_text_id]
-    
-    st.markdown(f"### {current_data['icon']} {current_data['title']}")
-    st.write(f"👤 Оқушы: **{st.session_state.student_name}** ({st.session_state.student_class})")
-    
-    tab1, tab2, tab3 = st.tabs(["📖 1. Мәтінді Оқу", "📝 2. Тест Тапсырмалары", "🔗 3. Сәйкестендіру"])
-
-    # ------------------ TAB 1: МӘТІН ------------------
-    with tab1:
-        st.markdown('<div class="text-card">', unsafe_allow_html=True)
-        st.markdown(current_data['text'])
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.success("👉 Мәтінді оқып болсаңыз, жоғарыдағы **«2. Тест Тапсырмалары»** немесе **«3. Сәйкестендіру»** бөліміне өтіңіз!")
-
-    # ------------------ TAB 2: ТЕСТ ------------------
-    with tab2:
-        st.subheader("📝 NIS Форматындағы Тест Сұрақтары")
-        user_answers = {}
-        with st.form(key=f"quiz_form_{st.session_state.selected_text_id}"):
-            for q_idx, q in enumerate(current_data['quiz']):
-                st.markdown(f"**{q['question']}**")
-                user_answers[q_idx] = st.radio("Жауапты таңдаңыз:", q['options'], key=f"q_{st.session_state.selected_text_id}_{q_idx}", index=None)
-                st.markdown("---")
-            submit_quiz = st.form_submit_button("🎯 Жауаптарды Тексеру")
-
-        if submit_quiz:
-            score = 0
-            total = len(current_data['quiz'])
-            for q_idx, q in enumerate(current_data['quiz']):
-                if user_answers[q_idx] == q['answer']:
-                    score += 1
-
-            gained_xp = score * 20
-            st.session_state.xp += gained_xp
-            
-            # Оқушы нәтижесін журналға сақтау
-            result_record = {
-                "Уақыты": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "Аты-жөні": st.session_state.student_name,
-                "Сыныбы": st.session_state.student_class,
-                "Мәтін": current_data['title'],
-                "Ұпай": f"{score}/{total}",
-                "XP": f"+{gained_xp} XP"
-            }
-            st.session_state.student_results.append(result_record)
-
-            st.balloons()
-            st.success(f"📊 Сіздің нәтижеңіз: {score} / {total} ({int(score/total*100)}%) | Жинағаныңыз: +{gained_xp} XP")
-
-    # ------------------ TAB 3: СӘЙКЕС ТАПСЫРМА ------------------
-    with tab3:
-        st.subheader("🔗 Ұғымдарды Сәйкестендіру")
-        matching_data = current_data['matching']
-        left_items = list(matching_data.keys())
-        right_options = list(matching_data.values())
-        
-        user_matching = {}
-        with st.form(key=f"matching_form_{st.session_state.selected_text_id}"):
-            for item in left_items:
-                st.markdown(f"📌 **{item}**")
-                user_matching[item] = st.selectbox("Анықтамасын таңдаңыз:", ["-- Таңдаңыз --"] + right_options, key=f"match_{item}")
-                st.write("")
-            submit_match = st.form_submit_button("✅ Сәйкестікті Тексеру")
-
-        if submit_match:
-            correct_count = sum(1 for item, val in matching_data.items() if user_matching[item] == val)
-            if correct_count == len(matching_data):
-                st.balloons()
-                st.success(f"🎉 Барлық сәйкестік дұрыс! (+50 XP)")
-                st.session_state.xp += 50
-            else:
-                st.warning(f"🎯 Дұрыс табылмаған жұптар бар. Нәтиже: {correct_count} / {len(matching_data)}")
-
-# =====================================================================
-# VIEW 3: TEACHER DASHBOARD (МҰҒАЛІМНІҢ БАҚЫЛАУ ЖУРНАЛЫ)
-# =====================================================================
-elif st.session_state.current_view == "teacher_dashboard":
-    st.subheader("📊 Мұғалім панелі: Оқушылардың нәтижелер журналы")
-    st.info("Бұл жерде платформа арқылы тапсырма тапсырған барлық оқушылардың тізімі мен жинаған ұпайлары көрінеді.")
-
-    if not st.session_state.student_results:
-        st.warning("📭 Әзірге ешқандай оқушы нәтиже жіберген жоқ.")
-    else:
-        df = pd.DataFrame(st.session_state.student_results)
-        st.dataframe(df, use_container_width=True)
-
-        st.markdown("### ⚙️ Журналды басқару (Тазарту/Өшіру)")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("🗑️ Барлық нәтижелерді тазарту", use_container_width=True):
-                st.session_state.student_results = []
-                st.success("Журнал толығымен тазартылды!")
-                st.rerun()
-        with col2:
-            row_to_delete = st.number_input("Өшіретін жолдың нөмірі (index):", min_value=0, max_value=max(0, len(st.session_state.student_results)-1), step=1)
-            if st.button("❌ Таңдалған жолды кетіру", use_container_width=True):
-                if st.session_state.student_results:
-                    st.session_state.student_results.pop(row_to_delete)
-                    st.success("Таңдалған жол сәтті өшірілді!")
-                    st.rerun()
-
-    if st.button("🔙 Басты бетке қайту"):
-        st.session_state.current_view = "bookcase"
-        st.rerun()
+                if not st.session_state.student_
