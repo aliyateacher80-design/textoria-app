@@ -244,14 +244,9 @@ TEXTS_DATABASE = {
 }
 
 # =========================================================
-# --- ЖОТАРҒЫ БӨЛІК: ТАҚЫРЫП ЖӘНЕ ОҚУШЫ ПАНЕЛІ ---
+# --- ЖОТАРҒЫ БӨЛІК: ОҚУШЫ ПАНЕЛІ ЖӘНЕ БАСҚАРУ МӘЗІРІ ---
 # =========================================================
 st.markdown('<div class="top-panel">', unsafe_allow_html=True)
-
-# Басты тақырып пен ұран ең жоғарғы жаққа шығарылды
-st.title("📚 TEXTORIA — Кітап сөресі (Bookcase)")
-st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
-st.markdown("---")
 
 col_p1, col_p2, col_p3, col_p4 = st.columns([2, 1, 1, 1])
 
@@ -259,7 +254,7 @@ with col_p1:
     st.session_state.student_name = st.text_input("👤 Оқушының аты-жөні:", value=st.session_state.student_name, placeholder="Мысалы: Асан Әлішер")
 
 with col_p2:
-    # Сыныптар тек 6-сыныптар («А», «Ә», «Б», «В», «Г») болып өзгертілді
+    # Сыныптар тек 6-сыныптар (А, Ә, Б, В, Г)
     st.session_state.student_class = st.selectbox("🏫 Сыныбы:", ["6 «А»", "6 «Ә»", "6 «Б»", "6 «В»", "6 «Г»"])
 
 with col_p3:
@@ -298,6 +293,11 @@ st.markdown('</div>', unsafe_allow_html=True)
 # --- НЕГІЗГІ БЕТ ИНТЕРФЕЙСІ ---
 # =========================================================
 if st.session_state.current_view == "bookcase":
+    # Тақырып пен ұран ең жоғарғы жаққа, кітап сөресінің басына бөлек орналастырылды
+    st.title("📚 TEXTORIA — Кітап сөресі (Bookcase)")
+    st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
+    st.markdown("---")
+    
     cols = st.columns(3)
     for idx, (text_id, data) in enumerate(TEXTS_DATABASE.items()):
         col = cols[idx % 3]
