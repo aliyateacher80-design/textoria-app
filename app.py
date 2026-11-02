@@ -279,41 +279,58 @@ TEXTS_DATABASE = {
 }
 
 # =========================================================
-# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) ---
+# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) — СУРЕТТЕГІДЕЙ СТИЛЬ ---
 # =========================================================
 with st.sidebar:
-    st.image("https://img.icons8.com/isometric-folders/100/open-book.png", width=80)
-    st.title("👤 Оқушы профилі")
+    st.markdown("🔵 **ОҚУШЫ ПРОФИЛІ**")
     
     st.session_state.student_name = st.text_input("Оқушының аты-жөні:", value=st.session_state.student_name, placeholder="Мысалы: Асан Әлішер")
     st.session_state.student_class = st.selectbox("Сыныбы:", ["5 «А»", "5 «Ә»", "6 «А»", "6 «Ә»", "7 «А»", "7 «Ә»"])
     
     current_xp = st.session_state.xp
     level = (current_xp // 100) + 1
+    xp_to_next = 100 - (current_xp % 100)
     
-    st.markdown(f"**Деңгей:** 🎖️ {level}-деңгей")
+    st.markdown(f"**Деңгей:** 🏆 {level}-деңгей (Зерттеуші)")
     st.markdown(f"**XP Ұпай:** ⚡ {current_xp} XP")
+    st.markdown(f"<small style='color: #94a3b8;'>Келесі деңгейге: {xp_to_next} XP қалды</small>", unsafe_allow_html=True)
     
     st.markdown("---")
-    st.subheader("🧭 Басқару")
+    st.markdown("🦊 **Жетістіктер**")
     
-    if st.button("🏠 Кітап сөресіне оралу", use_container_width=True):
+    # Суреттегідей жетістік батырмалары немесе статус белгілері
+    st.markdown("""
+    <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 8px; text-align: center; color: #f59e0b; font-weight: bold;">
+        🔍 Reading Literacy
+    </div>
+    <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 12px; text-align: center; color: #f59e0b; font-weight: bold;">
+        🎓 NIS Candidate
+    </div>
+    """, unsafe_allow_html=True)
+    
+    completed_count = len(st.session_state.completed_texts)
+    st.markdown(f"**Орындалған мәтіндер:** {completed_count}/9")
+    
+    st.markdown("---")
+    
+    if st.button("📚 Кітап Сөресіне оралу", use_container_width=True):
         st.session_state.current_view = "bookcase"
         st.rerun()
         
-    if st.button("📊 Оқушылар нәтижесі", use_container_width=True):
+    if st.button("📊 Мұғалім панелі (Dashboard)", use_container_width=True):
         st.session_state.current_view = "dashboard"
         st.rerun()
         
     st.markdown("---")
     if st.button("🗑️ Базаны тазалау", use_container_width=True):
         st.session_state.student_results = []
-        st.success("База сәтті тазартылды!")
+        st.session_state.completed_texts = set()
+        st.session_state.xp = 0
+        st.success("База мен ұпайлар тазартылды!")
         st.rerun()
         
     st.markdown("---")
-    st.caption("© 2026 TEXTORIA | NIS Prep Platform")
-    st.caption("автор Сұлтанова М.")
+    st.caption("© 2026 TEXTORIA | автор Сұлтанова М.")
 
 # =========================================================
 # --- НЕГІЗГІ БЕТ ИНТЕРФЕЙСІ ---
@@ -323,7 +340,6 @@ if st.session_state.current_view == "bookcase":
     st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
     st.markdown("---")
     
-    # 9 мәтінді 3 бағанға бөліп орналастыру (Сіздің суретіңіздегідей кітап сөресі стилі)
     cols = st.columns(3)
     for idx, (text_id, data) in enumerate(TEXTS_DATABASE.items()):
         col = cols[idx % 3]
@@ -379,7 +395,7 @@ elif st.session_state.current_view == "reader":
 
         if submit_button:
             if not st.session_state.student_name:
-                st.error("⚠️ Өтініш, алдымен сол жақ бүйірлік панельге аты-жөніңізді енгізіңіз!")
+                st.error("⚠️ Өтініш, алдымен бүйірлік панельге аты-жөніңізді енгізіңіз!")
             else:
                 score = 0
                 total = len(current_text["quiz"])
@@ -392,7 +408,6 @@ elif st.session_state.current_view == "reader":
                     st.session_state.completed_texts.add(st.session_state.selected_text_id)
                     st.session_state.xp += earned_xp
                 
-                # Нәтижені жинақтау базасына қосу
                 st.session_state.student_results.append({
                     "Оқушы аты-жөні": st.session_state.student_name,
                     "Сыныбы": st.session_state.student_class,
