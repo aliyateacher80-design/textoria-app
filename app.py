@@ -71,7 +71,7 @@ st.markdown("""
         background: rgba(30, 41, 59, 0.9);
         border: 2px solid #6366f1;
         border-radius: 15px;
-        padding: 15px 20px;
+        padding: 20px;
         margin-bottom: 25px;
     }
 </style>
@@ -91,7 +91,7 @@ if 'student_results' not in st.session_state:
 if 'student_name' not in st.session_state:
     st.session_state.student_name = ""
 if 'student_class' not in st.session_state:
-    st.session_state.student_class = "5 «Ә»"
+    st.session_state.student_class = "6 «А»"
 
 # --- 9 МӘТІН ЖӘНЕ ТАПСЫРМАЛАР БАЗАСЫ ---
 TEXTS_DATABASE = {
@@ -244,16 +244,23 @@ TEXTS_DATABASE = {
 }
 
 # =========================================================
-# --- ЖОТАРҒЫ БӨЛІК: ОҚУШЫ ПРОФИЛІ ЖӘНЕ БАСҚАРУ МӘЗІРІ ---
+# --- ЖОТАРҒЫ БӨЛІК: ТАҚЫРЫП ЖӘНЕ ОҚУШЫ ПАНЕЛІ ---
 # =========================================================
 st.markdown('<div class="top-panel">', unsafe_allow_html=True)
+
+# Басты тақырып пен ұран ең жоғарғы жаққа шығарылды
+st.title("📚 TEXTORIA — Кітап сөресі (Bookcase)")
+st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
+st.markdown("---")
+
 col_p1, col_p2, col_p3, col_p4 = st.columns([2, 1, 1, 1])
 
 with col_p1:
     st.session_state.student_name = st.text_input("👤 Оқушының аты-жөні:", value=st.session_state.student_name, placeholder="Мысалы: Асан Әлішер")
 
 with col_p2:
-    st.session_state.student_class = st.selectbox("🏫 Сыныбы:", ["5 «А»", "5 «Ә»", "6 «А»", "6 «Ә»", "7 «А»", "7 «Ә»"])
+    # Сыныптар тек 6-сыныптар («А», «Ә», «Б», «В», «Г») болып өзгертілді
+    st.session_state.student_class = st.selectbox("🏫 Сыныбы:", ["6 «А»", "6 «Ә»", "6 «Б»", "6 «В»", "6 «Г»"])
 
 with col_p3:
     current_xp = st.session_state.xp
@@ -291,10 +298,6 @@ st.markdown('</div>', unsafe_allow_html=True)
 # --- НЕГІЗГІ БЕТ ИНТЕРФЕЙСІ ---
 # =========================================================
 if st.session_state.current_view == "bookcase":
-    st.title("📚 TEXTORIA — Кітап сөресі (Bookcase)")
-    st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
-    st.markdown("---")
-    
     cols = st.columns(3)
     for idx, (text_id, data) in enumerate(TEXTS_DATABASE.items()):
         col = cols[idx % 3]
