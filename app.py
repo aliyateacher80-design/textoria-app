@@ -279,7 +279,7 @@ TEXTS_DATABASE = {
 }
 
 # =========================================================
-# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) — СУРЕТТЕГІДЕЙ СТИЛЬ ---
+# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) ---
 # =========================================================
 with st.sidebar:
     st.markdown("🔵 **ОҚУШЫ ПРОФИЛІ**")
@@ -297,8 +297,6 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("🦊 **Жетістіктер**")
-    
-    # Суреттегідей жетістік батырмалары немесе статус белгілері
     st.markdown("""
     <div style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 8px; text-align: center; color: #f59e0b; font-weight: bold;">
         🔍 Reading Literacy
