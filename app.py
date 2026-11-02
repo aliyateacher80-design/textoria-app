@@ -323,7 +323,7 @@ if st.session_state.current_view == "bookcase":
     st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
     st.markdown("---")
     
-    # 9 мәтінді 3 бағанға бөліп орналастыру (Кітап сөресі стилі)
+    # 9 мәтінді 3 бағанға бөліп орналастыру (Сіздің суретіңіздегідей кітап сөресі стилі)
     cols = st.columns(3)
     for idx, (text_id, data) in enumerate(TEXTS_DATABASE.items()):
         col = cols[idx % 3]
