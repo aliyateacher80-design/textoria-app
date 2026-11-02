@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS СТИЛЬДЕРІ ---
+# --- CSS СТИЛЬДЕРІ (Сұрақтар мен мәтіндерді ақ түске бояу) ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@400;600;800&display=swap');
@@ -36,6 +36,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
+    /* Тест және сәйкестендіру сұрақтарын ақ түске өзгерту */
     .stMarkdown, p, span, label, div[data-baseweb="radio"] div, div[data-baseweb="select"] div {
         color: #ffffff !important;
     }
@@ -56,6 +57,16 @@ st.markdown("""
         transform: translateY(-3px) scale(1.02) !important;
         box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6) !important;
     }
+
+    .book-shelf-card {
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        border: 2px solid #38bdf8;
+        border-radius: 18px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 15px;
+        color: #ffffff;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -64,6 +75,8 @@ if 'xp' not in st.session_state:
     st.session_state.xp = 0
 if 'completed_texts' not in st.session_state:
     st.session_state.completed_texts = set()
+if 'current_view' not in st.session_state:
+    st.session_state.current_view = "bookcase"
 if 'selected_text_id' not in st.session_state:
     st.session_state.selected_text_id = 1
 if 'student_results' not in st.session_state:
@@ -265,13 +278,14 @@ TEXTS_DATABASE = {
 }
 
 # =========================================================
-# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) ---
+# --- БҮЙІРЛІК ПАНЕЛЬ (SIDEBAR) — ОҚУШЫ ДЕРЕКТЕРІ ЖӘНЕ МӘТІНДЕР ---
 # =========================================================
 with st.sidebar:
+    st.image("https://img.icons8.com/isometric-folders/100/open-book.png", width=80)
     st.title("👤 Оқушы профилі")
     
-    st.session_state.student_name = st.text_input("Аты-жөніңіз:", value=st.session_state.student_name, placeholder="Мысалы: Асан Әлішер")
-    st.session_state.student_class = st.selectbox("Сыныбыңыз:", ["5 «А»", "5 «Ә»", "6 «А»", "6 «Ә»", "7 «А»", "7 «Ә»"])
+    st.session_state.student_name = st.text_input("Оқушының аты-жөні:", value=st.session_state.student_name, placeholder="Мысалы: Асан Әлішер")
+    st.session_state.student_class = st.selectbox("Сыныбы:", ["5 «А»", "5 «Ә»", "6 «А»", "6 «Ә»", "7 «А»", "7 «Ә»"])
     
     current_xp = st.session_state.xp
     level = (current_xp // 100) + 1
@@ -280,17 +294,17 @@ with st.sidebar:
     st.markdown(f"**XP Ұпай:** ⚡ {current_xp} XP")
     
     st.markdown("---")
-    st.subheader("📚 Мәтінді таңдау")
+    st.subheader("📚 Мәтіндер тізімі")
     text_options = {text_id: f"{data['icon']} {data['title']}" for text_id, data in TEXTS_DATABASE.items()}
     selected_id = st.selectbox(
         "Мәтінді таңдаңыз:", 
         options=list(text_options.keys()), 
-        format_func=lambda x: text_options[x],
-        label_visibility="collapsed"
+        format_func=lambda x: text_options[x]
     )
     st.session_state.selected_text_id = selected_id
     
     st.markdown("---")
+    st.caption("© 2026 TEXTORIA | NIS Prep Platform")
     st.caption("Автор: Сұлтанова М.")
 
 # =========================================================
@@ -322,17 +336,18 @@ if mode == "📖 Оқушы режимі":
             for i, q in enumerate(current_text["quiz"]):
                 st.markdown(f"**{q['question']}**")
                 user_answers[i] = st.radio(
-                    label=f"Жауап {i+1}:", 
+                    label=f"Сұрақ {i+1} жауабы:", 
                     options=q["options"], 
                     key=f"q_{st.session_state.selected_text_id}_{i}",
                     label_visibility="collapsed"
                 )
+                st.write("")
             
             submit_button = st.form_submit_button(label="🚀 Жауаптарды тексеру")
 
         if submit_button:
             if not st.session_state.student_name:
-                st.error("⚠️ Өтініш, сол жақ панельге аты-жөніңізді енгізіңіз!")
+                st.error("⚠️ Өтініш, алдымен сол жақ бүйірлік панельге аты-жөніңізді енгізіңіз!")
             else:
                 score = 0
                 total = len(current_text["quiz"])
@@ -356,7 +371,7 @@ if mode == "📖 Оқушы режимі":
                 })
                 
                 st.balloons()
-                st.success(f"🎉 Құттықтаймыз, {st.session_state.student_name}! Нәтижеңіз мұғалім базасына сәтті сақталды!")
+                st.success(f"🎉 Құттықтаймыз, {st.session_state.student_name}! Сіз {score}/{total} ұпай жинадыңыз (+{earned_xp} XP)!")
 
 else:
     # --- МҰҒАЛІМ ПАНЕЛІ (TEACHER DASHBOARD) ---
