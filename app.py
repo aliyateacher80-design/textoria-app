@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS СТИЛЬДЕРІ (Сұрақтар мен мәтіндерді ақ түске бояу) ---
+# --- CSS СТИЛЬДЕРІ ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@400;600;800&display=swap');
@@ -36,7 +36,6 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Тест және сәйкестендіру сұрақтарын ақ түске өзгерту */
     .stMarkdown, p, span, label, div[data-baseweb="radio"] div, div[data-baseweb="select"] div {
         color: #ffffff !important;
     }
@@ -66,6 +65,7 @@ st.markdown("""
         text-align: center;
         margin-bottom: 15px;
         color: #ffffff;
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -295,26 +295,57 @@ with st.sidebar:
     st.markdown(f"**XP Ұпай:** ⚡ {current_xp} XP")
     
     st.markdown("---")
-    st.subheader("📚 Мәтіндер тізімі")
-    text_options = {text_id: f"{data['icon']} {data['title']}" for text_id, data in TEXTS_DATABASE.items()}
-    selected_id = st.selectbox(
-        "Мәтінді таңдаңыз:", 
-        options=list(text_options.keys()), 
-        format_func=lambda x: text_options[x]
-    )
-    st.session_state.selected_text_id = selected_id
+    st.subheader("🧭 Басқару")
     
+    if st.button("🏠 Кітап сөресіне оралу", use_container_width=True):
+        st.session_state.current_view = "bookcase"
+        st.rerun()
+        
+    if st.button("📊 Оқушылар нәтижесі", use_container_width=True):
+        st.session_state.current_view = "dashboard"
+        st.rerun()
+        
+    st.markdown("---")
+    if st.button("🗑️ Базаны тазалау", use_container_width=True):
+        st.session_state.student_results = []
+        st.success("База сәтті тазартылды!")
+        st.rerun()
+        
     st.markdown("---")
     st.caption("© 2026 TEXTORIA | NIS Prep Platform")
     st.caption("автор Сұлтанова М.")
 
 # =========================================================
-# --- НЕГІЗГІ БЕТ ИНТЕРФЕЙСІ ЖӘНЕ МҰҒАЛІМ ПАНЕЛІ ---
+# --- НЕГІЗГІ БЕТ ИНТЕРФЕЙСІ ---
 # =========================================================
-mode = st.radio("Режимді таңдаңыз:", ["📖 Оқушы режимі", "👩‍🏫 Мұғалім панелі (Teacher Dashboard)"], horizontal=True)
+if st.session_state.current_view == "bookcase":
+    st.title("📚 TEXTORIA — Кітап сөресі (Bookcase)")
+    st.markdown("«Ойла. Талда. Жетістікке жет!» Оқу үшін төмендегі мәтіндердің бірін таңдаңыз:")
+    st.markdown("---")
+    
+    # 9 мәтінді 3 бағанға бөліп орналастыру (Кітап сөресі стилі)
+    cols = st.columns(3)
+    for idx, (text_id, data) in enumerate(TEXTS_DATABASE.items()):
+        col = cols[idx % 3]
+        with col:
+            st.markdown(f"""
+            <div class="book-shelf-card">
+                <h2>{data['icon']}</h2>
+                <h4>{data['title']}</h4>
+                <p><b>Жанр:</b> {data['genre']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button(f"📖 Мәтінді ашу #{text_id}", key=f"book_btn_{text_id}", use_container_width=True):
+                st.session_state.selected_text_id = text_id
+                st.session_state.current_view = "reader"
+                st.rerun()
 
-if mode == "📖 Оқушы режимі":
+elif st.session_state.current_view == "reader":
     current_text = TEXTS_DATABASE[st.session_state.selected_text_id]
+    
+    if st.button("⬅️ Кітап сөресіне қайту"):
+        st.session_state.current_view = "bookcase"
+        st.rerun()
 
     st.title(f"{current_text['icon']} {current_text['title']}")
     st.markdown("«Ойла. Талда. Жетістікке жет!»")
@@ -330,7 +361,7 @@ if mode == "📖 Оқушы режимі":
         """, unsafe_allow_html=True)
 
     with tab2:
-        st.subheader("NIS Форматындағы Тест Сұрақтары")
+        st.subheader("NIS Форматындағы Тест Сұрақтары (5 сұрақ)")
         
         with st.form(key=f"quiz_form_{st.session_state.selected_text_id}"):
             user_answers = {}
@@ -361,6 +392,7 @@ if mode == "📖 Оқушы режимі":
                     st.session_state.completed_texts.add(st.session_state.selected_text_id)
                     st.session_state.xp += earned_xp
                 
+                # Нәтижені жинақтау базасына қосу
                 st.session_state.student_results.append({
                     "Оқушы аты-жөні": st.session_state.student_name,
                     "Сыныбы": st.session_state.student_class,
@@ -403,12 +435,18 @@ if mode == "📖 Оқушы режимі":
         else:
             st.info("Бұл мәтін үшін сәйкестендіру тапсырмасы қарастырылмаған.")
 
-else:
-    st.title("👩‍🏫 Мұғалімнің басқару панелі (Teacher Dashboard)")
-    st.markdown("Бұл бөлімде барлық оқушылардың тапсырған нәтижелері жинақталып көрсетіледі.")
+elif st.session_state.current_view == "dashboard":
+    st.title("📊 Оқушылардың нәтижелері (Teacher Dashboard)")
+    st.markdown("Бұл бөлімде оқушылардың тест тапсыру нәтижелері автоматты түрде жинақталып көрсетіледі.")
+    
+    if st.button("⬅️ Кітап сөресіне қайту"):
+        st.session_state.current_view = "bookcase"
+        st.rerun()
+        
+    st.markdown("---")
     
     if len(st.session_state.student_results) == 0:
-        st.info("📭 Әзірге ешқандай оқушы тест тапсырған жоқ немесе база тазаланған.")
+        st.info("📭 Әзірге ешқандай оқушы нәтижесі тіркелген жоқ.")
     else:
         df_results = pd.DataFrame(st.session_state.student_results)
         
@@ -417,11 +455,11 @@ else:
         col2.metric("Қатысқан оқушылар", df_results["Оқушы аты-жөні"].nunique())
         col3.metric("Жалпы берілген XP", int(df_results["Жинаған XP"].sum()))
         
-        st.markdown("### 📋 Оқушылардың нәтижелер кестесі")
+        st.markdown("### 📋 Нәтижелер кестесі")
         st.dataframe(df_results, use_container_width=True)
         
         st.markdown("---")
-        if st.button("🗑️ Барлық нәтижелер базасын тазалау (Reset Database)"):
+        if st.button("🗑️ Барлық нәтижелер базасын тазалау"):
             st.session_state.student_results = []
             st.success("✅ База сәтті тазартылды!")
             st.rerun()
